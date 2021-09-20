@@ -38,4 +38,9 @@ jobs:
         run: | 
           python build.py 
 
-      
+      # view built conan packages
+      - name: View built packages
+        run : |
+          conan search "*"
+
+          
