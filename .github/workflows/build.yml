@@ -22,13 +22,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # use conan to build and store
+      # setup build tools: ninja, conan
+      - name: Setup Ninja
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          version: 1.10.0
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
       - name: Conan version
         run: echo "${{ steps.conan.outputs.version }}"
 
+      # build phase
       - name: Build
         run: | 
           python build.py 
