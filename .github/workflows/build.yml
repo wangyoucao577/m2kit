@@ -1,0 +1,36 @@
+name: Build 
+
+on: 
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # use conan to build and store
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+      - name: Conan version
+        run: echo "${{ steps.conan.outputs.version }}"
+
+      - name: Build
+        run: | 
+          python build.py 
+
+      
