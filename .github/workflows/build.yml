@@ -30,8 +30,8 @@ jobs:
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
-      - name: Conan version
-        run: echo "${{ steps.conan.outputs.version }}"
+      - name: Check tools
+        run: conan --version && ninja --version
 
       # build phase
       - name: Build
