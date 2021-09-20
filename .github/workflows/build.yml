@@ -24,9 +24,7 @@ jobs:
 
       # setup build tools: ninja, conan
       - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          version: 1.10.0
+        run: apt-get install ninja-build
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
