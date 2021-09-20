@@ -31,7 +31,7 @@ jobs:
         id: conan
         uses: turtlebrowser/get-conan@main
       - name: Check tools
-        run: conan --version && ninja --version
+        run: conan --version && ninja --version && echo $PATH
 
       # build phase
       - name: Build
