@@ -25,8 +25,8 @@ jobs:
           submodules: 'true'
 
       # setup build tools: ninja, conan
-      - name: Setup Ninja
-        run: sudo apt-get install ninja-build
+      - name: Setup build requirements
+        run: sudo apt-get install ninja-build yasm
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
