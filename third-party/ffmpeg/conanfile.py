@@ -14,6 +14,7 @@ class FfmpegConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
     exports_sources = "src/*"
+    requires = "boringssl/0.1"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -23,6 +24,16 @@ class FfmpegConan(ConanFile):
         configureArgs=["--cc="+str(self.settings.compiler), "--cxx="+str(self.settings.compiler)]
         if self.settings.build_type == "Debug":
             configureArgs.append("--enable-debug")
+
+        # deps is a list of package names, for example ["boringssl"]
+        for d in self.deps_cpp_info.deps:
+            for p in self.deps_cpp_info[d].include_paths:
+                configureArgs.append("--extra-cflags=-I"+p)
+            for p in self.deps_cpp_info[d].lib_paths:
+                configureArgs.append("--extra-ldflags=-L"+p)
+
+        configureArgs.append("--enable-openssl")        
+        configureArgs.append("--extra-libs=-pthread")   
 
         with tools.chdir("./src/ffmpeg-4.4/"):
             autotools = AutoToolsBuildEnvironment(self)
