@@ -19,8 +19,8 @@ jobs:
         build_params: 
           - ""  # default gcc
           # - "-s compiler=clang -s compiler.version=12"
-          - "-s compiler=clang -s compiler.version=12 -s compiler.libcxx=c++_static -s os=Android -s os.api_level=16 -s arch=armv7"
-          - "-s compiler=clang -s compiler.version=12 -s compiler.libcxx=c++_static -s os=Android -s os.api_level=21 -s arch=armv8"
+          - "-s arch=armv7 -s os=Android -s os.api_level=16 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
+          - "-s arch=armv8 -s os=Android -s os.api_level=21 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
