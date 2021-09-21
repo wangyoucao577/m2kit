@@ -1,3 +1,4 @@
+import os
 from conans import ConanFile, CMake
 from conans import tools
 
@@ -28,6 +29,9 @@ class BoringsslConan(ConanFile):
                 print("ANDROID_NDK_HOME is not set")
                 os.exit(1)
             cmakeArgs.append("-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake".format(android_ndk_home))
+        elif self.settings.os == "iOS":
+            cmakeArgs.append("-DCMAKE_OSX_SYSROOT=iphoneos")
+            cmakeArgs.append("-DCMAKE_OSX_ARCHITECTURES={}".format(tools.to_apple_arch(self.settings.arch)))
 
         cmake = CMake(self, generator="Ninja")
         cmake.verbose = True
