@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake
-
+from conans import tools
 
 class BoringsslConan(ConanFile):
     name = "boringssl"
@@ -20,15 +20,19 @@ class BoringsslConan(ConanFile):
             del self.options.fPIC
 
     def build(self):
-        cmake = CMake(self, generator="Ninja")
-        #cmake.verbose = True
-        cmake.configure(source_folder="src")
-        cmake.build()
 
-        # Explicit way:
-        # self.run('cmake %s/hello %s'
-        #          % (self.source_folder, cmake.command_line))
-        # self.run("cmake --build . %s" % cmake.build_config)
+        cmakeArgs = []
+        if self.settings.os == "Android":
+            android_ndk_home = tools.get_env("ANDROID_NDK_HOME")
+            if android_ndk_home is None:
+                print("ANDROID_NDK_HOME is not set")
+                os.exit(1)
+            cmakeArgs.append("-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake".format(android_ndk_home))
+
+        cmake = CMake(self, generator="Ninja")
+        cmake.verbose = True
+        cmake.configure(source_folder="src", args=cmakeArgs)
+        cmake.build()
 
     def package(self):
         self.copy("*.h", dst="include", src="src/boringssl/include", keep_path=True)
