@@ -1,3 +1,4 @@
+import os
 from conans import ConanFile, AutoToolsBuildEnvironment
 from conans import tools
 
@@ -30,7 +31,14 @@ class FfmpegConan(ConanFile):
             if android_ndk_home is None:
                 print("ANDROID_NDK_HOME is not set")
                 os.exit(1)
-            android_ndk_toolchain_path = android_ndk_home + "/toolchains/llvm/prebuilt/linux-x86_64"
+
+            # decide host_tag, default to linux
+            host_tag = "linux-x86_64"   
+            if tools.detected_os() == "Darwin":
+                host_tag = "darwin-x86_64"
+            elif tools.detected_os() == "Windows":
+                host_tag = "windows-x86_64"
+            android_ndk_toolchain_path = android_ndk_home + "/toolchains/llvm/prebuilt/{}".format(host_tag)
             configureArgs.append("--enable-cross-compile")
             configureArgs.append("--target-os=android")
             configureArgs.append("--sysroot={}/sysroot".format(android_ndk_toolchain_path))
