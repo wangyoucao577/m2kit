@@ -21,9 +21,43 @@ class FfmpegConan(ConanFile):
             del self.options.fPIC
 
     def build(self):
-        configureArgs=["--cc="+str(self.settings.compiler), "--cxx="+str(self.settings.compiler)]
+        configureArgs=[]
         if self.settings.build_type == "Debug":
             configureArgs.append("--enable-debug")
+
+        if self.settings.os == "Android":
+            android_ndk_home = tools.get_env("ANDROID_NDK_HOME")
+            if android_ndk_home is None:
+                print("ANDROID_NDK_HOME is not set")
+                os.exit(1)
+            android_ndk_toolchain_path = android_ndk_home + "/toolchains/llvm/prebuilt/linux-x86_64"
+            configureArgs.append("--enable-cross-compile")
+            configureArgs.append("--target-os=android")
+            configureArgs.append("--sysroot={}/sysroot".format(android_ndk_toolchain_path))
+            if self.settings.arch == "armv7":
+                configureArgs.append("--arch=arm")
+                configureArgs.append("--cross-prefix={}/bin/arm-linux-androideabi-".format(android_ndk_toolchain_path))
+                configureArgs.append("--cc={}/bin/armv7a-linux-androideabi{}-clang".format(android_ndk_toolchain_path, self.settings.os.api_level))
+            elif self.settings.arch == "armv8":
+                configureArgs.append("--arch=aarch64")
+                configureArgs.append("--cross-prefix={}/bin/aarch64-linux-android-".format(android_ndk_toolchain_path))
+                configureArgs.append("--cc={}/bin/aarch64-linux-android{}-clang".format(android_ndk_toolchain_path, self.settings.os.api_level))
+            elif self.settings.arch == "x86":
+                configureArgs.append("--arch=x86")
+                configureArgs.append("--cross-prefix={}/bin/i686-linux-android-".format(android_ndk_toolchain_path))
+                configureArgs.append("--cc={}/bin/i686-linux-android{}-clang".format(android_ndk_toolchain_path, self.settings.os.api_level))
+            elif self.settings.arch == "x86_64":
+                configureArgs.append("--arch=x86_64")
+                configureArgs.append("--cross-prefix={}/bin/x86_64-linux-android-".format(android_ndk_toolchain_path))
+                configureArgs.append("--cc={}/bin/x86_64-linux-android{}-clang".format(android_ndk_toolchain_path, self.settings.os.api_level))
+            else:
+                print("arch {} is not support".format(self.settings.arch))
+                os.exit(1)
+
+        else:
+            configureArgs.append("--cc="+str(self.settings.compiler))
+            configureArgs.append("--cxx="+str(self.settings.compiler))
+
 
         # deps is a list of package names, for example ["boringssl"]
         for d in self.deps_cpp_info.deps:
@@ -37,7 +71,7 @@ class FfmpegConan(ConanFile):
 
         with tools.chdir("./src/ffmpeg-4.4/"):
             autotools = AutoToolsBuildEnvironment(self)
-            autotools.configure(args=configureArgs)
+            autotools.configure(args=configureArgs, build=False, host=False)
             autotools.make()
             autotools.install()
 
