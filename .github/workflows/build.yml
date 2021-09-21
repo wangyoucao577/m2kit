@@ -24,7 +24,8 @@ jobs:
           # - "-s compiler=clang -s compiler.version=12"
           - "-s arch=armv7 -s os=Android -s os.api_level=16 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
           - "-s arch=armv8 -s os=Android -s os.api_level=21 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
-    runs-on: ubuntu-latest
+          - "-s arch=x86_64 -s os=Android -s os.api_level=21 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
+      runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
