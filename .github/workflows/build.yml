@@ -67,7 +67,7 @@ jobs:
 
       # setup build tools: ninja, conan
       - name: Setup build requirements
-        run: brew install ninja-build yasm
+        run: brew install ninja yasm
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
