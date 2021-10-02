@@ -26,6 +26,19 @@ class FfmpegConan(ConanFile):
         if self.settings.build_type == "Debug":
             configureArgs.append("--enable-debug")
 
+        # deps is a list of package names, for example ["boringssl"]
+        deps_include_path = ""
+        deps_lib_path = ""
+        for d in self.deps_cpp_info.deps:
+            for p in self.deps_cpp_info[d].include_paths:
+                if deps_include_path != "":
+                    deps_include_path += " "
+                deps_include_path += "-I{}".format(p)
+            for p in self.deps_cpp_info[d].lib_paths:
+                if deps_lib_path != "":
+                    deps_lib_path += " "
+                deps_lib_path += "-L{}".format(p)
+
         if self.settings.os == "Android":
             android_ndk_home = tools.get_env("ANDROID_NDK_HOME")
             if android_ndk_home is None:
@@ -42,6 +55,8 @@ class FfmpegConan(ConanFile):
             configureArgs.append("--enable-cross-compile")
             configureArgs.append("--target-os=android")
             configureArgs.append("--sysroot={}/sysroot".format(android_ndk_toolchain_path))
+            configureArgs.append("--extra-cflags={}".format(deps_include_path))
+            configureArgs.append("--extra-ldflags={}".format(deps_lib_path))
             if self.settings.arch == "armv7":
                 configureArgs.append("--arch=arm")
                 configureArgs.append("--cross-prefix={}/bin/arm-linux-androideabi-".format(android_ndk_toolchain_path))
@@ -62,20 +77,22 @@ class FfmpegConan(ConanFile):
                 print("arch {} is not support".format(self.settings.arch))
                 os.exit(1)
 
+        elif self.settings.os == "iOS":
+            configureArgs.append("--enable-cross-compile")
+            configureArgs.append("--target-os=darwin")
+            configureArgs.append("--cc=xcrun -sdk {} clang".format("iphoneos"))
+            configureArgs.append("--arch={}".format(tools.to_apple_arch(self.settings.arch)))
+            configureArgs.append("--disable-audiotoolbox")
+            configureArgs.append("--extra-cflags=-arch {} -mios-version-min={} -fembed-bitcode {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, deps_include_path))
+            configureArgs.append("--extra-ldflags=-arch {} -mios-version-min={} -fembed-bitcode {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, deps_lib_path))
         else:
             configureArgs.append("--cc="+str(self.settings.compiler))
             configureArgs.append("--cxx="+str(self.settings.compiler))
-
-
-        # deps is a list of package names, for example ["boringssl"]
-        for d in self.deps_cpp_info.deps:
-            for p in self.deps_cpp_info[d].include_paths:
-                configureArgs.append("--extra-cflags=-I"+p)
-            for p in self.deps_cpp_info[d].lib_paths:
-                configureArgs.append("--extra-ldflags=-L"+p)
+            configureArgs.append("--extra-libs=-pthread")   
+            configureArgs.append("--extra-cflags={}".format(deps_include_path))
+            configureArgs.append("--extra-ldflags={}".format(deps_lib_path))
 
         configureArgs.append("--enable-openssl")        
-        configureArgs.append("--extra-libs=-pthread")   
 
         with tools.chdir("./src/ffmpeg-4.4/"):
             autotools = AutoToolsBuildEnvironment(self)
