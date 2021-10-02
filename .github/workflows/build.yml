@@ -51,4 +51,35 @@ jobs:
         run : |
           conan search "*"
 
-          
+  build-on-mac:
+    strategy:
+      matrix:
+        build_params: 
+          - ""  # host macos
+          - "-s arch=armv7 -s os=iOS -s os.version=9.0"
+          - "-s arch=armv8 -s os=iOS -s os.version=9.0"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+
+      # setup build tools: ninja, conan
+      - name: Setup build requirements
+        run: brew install ninja-build yasm
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+      - name: Check tools
+        run: conan --version && ninja --version && echo $PATH
+
+      # build phase
+      - name: Build
+        run: | 
+          python build.py ${{ matrix.build_params }}
+
+      # view built conan packages
+      - name: View built packages
+        run : |
+          conan search "*"
