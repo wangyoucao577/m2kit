@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     submodules = ["third-party/boringssl", "third-party/ffmpeg"]
 
-    if platform.system() == "Linux":
+    if platform.system() == "Linux" or platform.system() == "Darwin":
         for s in submodules:
             print("Start module building: " + s)
             start_time = time.time()
