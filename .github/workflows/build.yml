@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         build_params: 
-          #- ""  # host macos
+          - ""  # host macos
           - "-pr $(pwd)/buildtools/conan-profiles/ios-armv7"
           - "-pr $(pwd)/buildtools/conan-profiles/ios-armv8"
     runs-on: macos-latest
