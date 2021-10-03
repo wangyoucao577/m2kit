@@ -85,6 +85,15 @@ class FfmpegConan(ConanFile):
             configureArgs.append("--disable-audiotoolbox")
             configureArgs.append("--extra-cflags=-arch {} -mios-version-min={} -fembed-bitcode {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, deps_include_path))
             configureArgs.append("--extra-ldflags=-arch {} -mios-version-min={} -fembed-bitcode {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, deps_lib_path))
+        elif self.settings.os == "Macos":
+            # we have to setup `clang` by `xcrun clang` to avoid `ld: library not found for -lSystem` error on `macOS Big Sur`
+            configureArgs.append("--cc=xcrun clang")
+            configureArgs.append("--cxx=xcrun clang++")
+            #xcrun = tools.XCRun(self.settings)
+            #configureArgs.append("--cc="+xcrun.cc)
+            #configureArgs.append("--cxx="+xcrun.cxx)
+            configureArgs.append("--extra-cflags={}".format(deps_include_path))
+            configureArgs.append("--extra-ldflags={}".format(deps_lib_path))
         else:
             configureArgs.append("--cc="+str(self.settings.compiler))
             configureArgs.append("--cxx="+str(self.settings.compiler))
