@@ -14,7 +14,6 @@ on:
 
 env:
   CONAN_PRINT_RUN_COMMANDS: 1
-  CONAN_DEFAULT_PROFILE_PATH: ${GITHUB_WORKSPACE}/buildtools/conan-profiles
 
 jobs:
   build:
@@ -23,9 +22,9 @@ jobs:
         build_params: 
           - ""  # default gcc
           # - "-s compiler=clang -s compiler.version=12"
-          - "-pr android-armv7"
-          - "-pr android-armv8"
-          - "-pr android-x86_64"
+          - "-pr $(pwd)/buildtools/conan-profiles/android-armv7"
+          - "-pr $(pwd)/buildtools/conan-profiles/android-armv8"
+          - "-pr $(pwd)/buildtools/conan-profiles/android-x86_64"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,8 +57,8 @@ jobs:
       matrix:
         build_params: 
           - ""  # host macos
-          - "-pr ios-armv7"
-          - "-pr ios-armv8"
+          - "-pr $(pwd)/buildtools/conan-profiles/ios-armv7"
+          - "-pr $(pwd)/buildtools/conan-profiles/ios-armv8"
     runs-on: macos-latest
     steps:
       - name: Checkout
