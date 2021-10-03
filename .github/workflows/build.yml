@@ -50,10 +50,10 @@ jobs:
 
       # Install platform specified requirements
       - name: Install yasm on Ubuntu runner
-        if: startsWith(matrix.os, "ubuntu")
+        if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get install yasm
       - name: Install yasm on macOSX runner
-        if: startsWith(matrix.os, "macos")
+        if: startsWith(matrix.os, 'macos')
         run: brew install yasm
 
       # build phase
