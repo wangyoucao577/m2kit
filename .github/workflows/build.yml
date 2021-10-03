@@ -19,62 +19,42 @@ jobs:
   build:
     strategy:
       matrix:
-        build_params: 
-          - ""  # default gcc
-          # - "-s compiler=clang -s compiler.version=12"
-          - "-pr $(pwd)/buildtools/conan-profiles/android-armv7"
-          - "-pr $(pwd)/buildtools/conan-profiles/android-armv8"
-          - "-pr $(pwd)/buildtools/conan-profiles/android-x86_64"
-    runs-on: ubuntu-latest
+        os: ["ubuntu-latest", "macos-latest"]
+        build_params: [""] 
+        include:
+          # includes cross-compiling combinations for android
+          - os: ubuntu-latest
+            build_params: "-pr $(pwd)/buildtools/conan-profiles/android-armv7"
+          - os: ubuntu-latest
+            build_params: "-pr $(pwd)/buildtools/conan-profiles/android-armv8"
+          - os: ubuntu-latest
+            build_params: "-pr $(pwd)/buildtools/conan-profiles/android-x86_64"
+          # includes cross-compiling combinations for ios
+          - os: macos-latest
+            build_params: "-pr $(pwd)/buildtools/conan-profiles/ios-armv7"
+          - os: macos-latest
+            build_params: "-pr $(pwd)/buildtools/conan-profiles/ios-armv8"
+
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: 'true'
 
-      # setup build tools: ninja, conan
+      # setup build tools: ninja, conan, yasm
       - uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Setup build requirements
+      - uses: turtlebrowser/get-conan@main
+      - name: Check tools
+        run: conan --version && ninja --version && echo $PATH
+
+      # Install platform specified requirements
+      - name: Install yasm on Ubuntu runner
+        if: startsWith(matrix.os, "ubuntu")
         run: sudo apt-get install yasm
-      - name: Install Conan
-        id: conan
-        uses: turtlebrowser/get-conan@main
-      - name: Check tools
-        run: conan --version && ninja --version && echo $PATH
-
-      # build phase
-      - name: Build
-        run: | 
-          python3 build.py ${{ matrix.build_params }}
-
-      # view built conan packages
-      - name: View built packages
-        run : |
-          conan search "*"
-
-  build-on-mac:
-    strategy:
-      matrix:
-        build_params: 
-          - ""  # host macos
-          - "-pr $(pwd)/buildtools/conan-profiles/ios-armv7"
-          - "-pr $(pwd)/buildtools/conan-profiles/ios-armv8"
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: 'true'
-
-      # setup build tools: ninja, conan
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Setup build requirements
+      - name: Install yasm on macOSX runner
+        if: startsWith(matrix.os, "macos")
         run: brew install yasm
-      - name: Install Conan
-        id: conan
-        uses: turtlebrowser/get-conan@main
-      - name: Check tools
-        run: conan --version && ninja --version && echo $PATH
 
       # build phase
       - name: Build
