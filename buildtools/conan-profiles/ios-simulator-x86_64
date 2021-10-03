@@ -1,8 +1,8 @@
 [settings]
-arch=armv8
+arch=x86_64
 os=iOS
 os.version=9.0
-os.sdk=iphoneos
+os.sdk=iphonesimulator
 arch_build=x86_64
 os_build=Macos
 compiler=apple-clang

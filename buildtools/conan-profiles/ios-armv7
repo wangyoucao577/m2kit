@@ -2,6 +2,7 @@
 arch=armv7
 os=iOS
 os.version=9.0
+os.sdk=iphoneos
 arch_build=x86_64
 os_build=Macos
 compiler=apple-clang

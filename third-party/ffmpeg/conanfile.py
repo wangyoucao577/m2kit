@@ -80,11 +80,14 @@ class FfmpegConan(ConanFile):
         elif self.settings.os == "iOS":
             configureArgs.append("--enable-cross-compile")
             configureArgs.append("--target-os=darwin")
-            configureArgs.append("--cc=xcrun -sdk {} clang".format("iphoneos"))
+            configureArgs.append("--cc=xcrun -sdk {} clang".format(self.settings.os.sdk))
             configureArgs.append("--arch={}".format(tools.to_apple_arch(self.settings.arch)))
             configureArgs.append("--disable-audiotoolbox")
-            configureArgs.append("--extra-cflags=-arch {} -mios-version-min={} -fembed-bitcode {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, deps_include_path))
-            configureArgs.append("--extra-ldflags=-arch {} -mios-version-min={} -fembed-bitcode {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, deps_lib_path))
+            bitcodeFlag = "-fembed-bitcode"
+            if self.settings.os.sdk == "iphonesimulator":   # no bitcode for simulator
+                bitcodeFlag = ""
+            configureArgs.append("--extra-cflags=-arch {} -mios-version-min={} {} {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, bitcodeFlag, deps_include_path))
+            configureArgs.append("--extra-ldflags=-arch {} -mios-version-min={} {} {}".format(tools.to_apple_arch(self.settings.arch), self.settings.os.version, bitcodeFlag, deps_lib_path))
         elif self.settings.os == "Macos":
             # we have to setup `clang` by `xcrun clang` to avoid `ld: library not found for -lSystem` error on `macOS Big Sur`
             configureArgs.append("--cc=xcrun clang")

@@ -30,7 +30,7 @@ class BoringsslConan(ConanFile):
                 os.exit(1)
             cmakeArgs.append("-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake".format(android_ndk_home))
         elif self.settings.os == "iOS":
-            cmakeArgs.append("-DCMAKE_OSX_SYSROOT=iphoneos")
+            cmakeArgs.append("-DCMAKE_OSX_SYSROOT={}".format(self.settings.os.sdk))
             cmakeArgs.append("-DCMAKE_OSX_ARCHITECTURES={}".format(tools.to_apple_arch(self.settings.arch)))
 
         cmake = CMake(self, generator="Ninja")
