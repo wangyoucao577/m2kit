@@ -33,8 +33,9 @@ jobs:
           submodules: 'true'
 
       # setup build tools: ninja, conan
+      - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Setup build requirements
-        run: sudo apt-get install ninja-build yasm
+        run: sudo apt-get install yasm
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
@@ -66,8 +67,9 @@ jobs:
           submodules: 'true'
 
       # setup build tools: ninja, conan
+      - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Setup build requirements
-        run: brew install ninja yasm
+        run: brew install yasm
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
