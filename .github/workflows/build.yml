@@ -22,9 +22,9 @@ jobs:
         build_params: 
           - ""  # default gcc
           # - "-s compiler=clang -s compiler.version=12"
-          - "-s arch=armv7 -s os=Android -s os.api_level=16 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
-          - "-s arch=armv8 -s os=Android -s os.api_level=21 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
-          - "-s arch=x86_64 -s os=Android -s os.api_level=21 -s compiler=clang -s compiler.version=9 -s compiler.libcxx=c++_static"
+          - "-pr $(pwd)/buildtools/conan-profiles/android-armv7"
+          - "-pr $(pwd)/buildtools/conan-profiles/android-armv8"
+          - "-pr $(pwd)/buildtools/conan-profiles/android-x86_64"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -56,8 +56,8 @@ jobs:
       matrix:
         build_params: 
           #- ""  # host macos
-          - "-s arch=armv7 -s os=iOS -s os.version=9.0"
-          - "-s arch=armv8 -s os=iOS -s os.version=9.0"
+          - "-pr $(pwd)/buildtools/conan-profiles/ios-armv7"
+          - "-pr $(pwd)/buildtools/conan-profiles/ios-armv8"
     runs-on: macos-latest
     steps:
       - name: Checkout
