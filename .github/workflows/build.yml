@@ -24,18 +24,18 @@ jobs:
         include:
           # includes cross-compiling combinations for android
           - os: ubuntu-latest
-            build_params: "-pr $(pwd)/buildtools/conan-profiles/android-armv7"
+            build_params: "-pr android-armv7"
           - os: ubuntu-latest
-            build_params: "-pr $(pwd)/buildtools/conan-profiles/android-armv8"
+            build_params: "-pr android-armv8"
           - os: ubuntu-latest
-            build_params: "-pr $(pwd)/buildtools/conan-profiles/android-x86_64"
+            build_params: "-pr android-x86_64"
           # includes cross-compiling combinations for ios
           - os: macos-latest
-            build_params: "-pr $(pwd)/buildtools/conan-profiles/ios-armv7"
+            build_params: "-pr ios-armv7"
           - os: macos-latest
-            build_params: "-pr $(pwd)/buildtools/conan-profiles/ios-armv8"
+            build_params: "-pr ios-armv8"
           - os: macos-latest
-            build_params: "-pr $(pwd)/buildtools/conan-profiles/ios-simulator-x86_64"
+            build_params: "-pr ios-simulator-x86_64"
 
     runs-on: ${{ matrix.os }}
     steps:
