@@ -11,6 +11,9 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    - cron:  '5 0 * * 1'  # every Monday morning
+
 
 env:
   CONAN_PRINT_RUN_COMMANDS: 1
