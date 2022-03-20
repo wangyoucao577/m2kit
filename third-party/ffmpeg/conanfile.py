@@ -26,6 +26,13 @@ class FfmpegConan(ConanFile):
         if self.settings.build_type == "Debug":
             configureArgs.append("--enable-debug")
 
+        if self.options.shared:
+            configureArgs.append("--enable-shared")
+        else:
+            configureArgs.append("--enable-static")
+        if self.options.fPIC:
+            configureArgs.append("--enable-pic")
+
         # deps is a list of package names, for example ["boringssl"]
         deps_include_path = ""
         deps_lib_path = ""
