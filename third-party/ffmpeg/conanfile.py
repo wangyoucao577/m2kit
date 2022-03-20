@@ -89,6 +89,13 @@ class FfmpegConan(ConanFile):
             configureArgs.append("--disable-inline-asm")
             configureArgs.append("--disable-asm")
 
+            # enable mediacodec
+            configureArgs.append("--enable-jni")
+            configureArgs.append("--enable-mediacodec")
+            configureArgs.append("--enable-decoder=h264_mediacodec")
+            configureArgs.append("--enable-decoder=hevc_mediacodec")
+            configureArgs.append("--enable-decoder=mpeg4_mediacodec")
+
         elif self.settings.os == "iOS":
             configureArgs.append("--enable-cross-compile")
             configureArgs.append("--target-os=darwin")
