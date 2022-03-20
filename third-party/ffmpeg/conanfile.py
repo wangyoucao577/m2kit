@@ -84,7 +84,7 @@ class FfmpegConan(ConanFile):
                 print("arch {} is not support".format(self.settings.arch))
                 os.exit(1)
 
-            # to avod ndk build error (may be different for different archs, need to test)
+            # to avoid ndk build error (may be different for different archs, need to test)
             configureArgs.append("--disable-x86asm")
             configureArgs.append("--disable-inline-asm")
             configureArgs.append("--disable-asm")
